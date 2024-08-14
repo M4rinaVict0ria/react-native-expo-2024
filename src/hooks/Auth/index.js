@@ -16,9 +16,9 @@ export function AuthProvider({children}) {
         role: null,
     });
 
-    const singIn = async ({email, password}) => {
+    const SignIn = async ({email, password}) => {
 
-        if(email === "super@email.com" && password === "Super123!") {
+        if(email === "super@email.com" && password === "Super123!.") {
         setUser ({
             autenticated: true, 
             user: {id: 1, name: "Super Usuario", email}, 
@@ -47,7 +47,7 @@ export function AuthProvider({children}) {
 
     };
 
-    const singOut = async () => {
+    const SignOut = async () => {
         setUser({});
     };
 
@@ -56,7 +56,7 @@ export function AuthProvider({children}) {
     }, [user])
 
     return (
-    <AuthContext.Provider value={{ user, singIn, singOut}}>
+    <AuthContext.Provider value={{ user, SignIn, SignOut}}>
         {children}
     </AuthContext.Provider>
     );

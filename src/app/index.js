@@ -5,13 +5,13 @@ import { router } from 'expo-router';
 
 
 export default function App() {
-  const { singIn, singOut } = useAuth();
+  const { SignIn, SignOut } = useAuth();
 
   const handleEntrarSuper = async () => {
     try {
-      await singIn({email: "super@email.com", password: "Super123!."});
+      await SignIn({ email: "super@email.com", password: "Super123!." });
       router.replace("/");
-    }catch (error) {
+    } catch (error) {
       console.log(e);
       }
     };
@@ -20,15 +20,17 @@ export default function App() {
   return (
     <View style={styles.container}>
       <Text style={styles.title}>Minha Primeira janela</Text>
-      <Button title="Singin Super" onPress={handleEntrarSuper} />
+
+      <Button title='Entrar Super' onPress={handleEntrarSuper} />
+
       <Button
-       title="Singin Adm" 
-       onPress={()=> singIn({email: "adm@email.com", password: "Adm123!"})
+       title="Signin Adm" 
+       onPress={()=> SignIn({email: "adm@email.com", password: "Adm123!"})
         }
       />
       <Button
-       title="Singin User" 
-       onPress={()=> singIn({email: "user@email.com", password: "User123!"})
+       title="SignIn User" 
+       onPress={()=> SignIn({email: "user@email.com", password: "User123!"})
         }
       />
       <StatusBar style="auto" />
@@ -46,7 +48,15 @@ const styles = StyleSheet.create({
 
   title: {
     fontFamily: "regular",
-    color: "blue",
+    color: "Black",
+    fontSize: 24,
+    marginBottom: 24,
+    fontWeight: "bold",
+    borderBottomWidth: 2,
+    borderBottomColor: "black",
+    borderStyle: "solid",
+    fontFamily: "Roboto",
+    
   },
 
 });
