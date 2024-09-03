@@ -2,8 +2,11 @@ import { createContext, useEffect } from "react";
 import { useState } from "react";
 import React, { useContext } from "react";
 import { useUserDatabase } from "../../database/useUsersDatabase";
+import AsyncStorage from "@react-native-async-storage/async-storage";
+import { ActivityIndicator, Text, View } from "react-native";
 
 const AuthContext = createContext({});
+
 
 export const Role = {
   SUPER: "SUPER",
@@ -12,7 +15,6 @@ export const Role = {
 };
 
 export function AuthProvider({ children }) {
-  const { authUser } = useUserDatabase();
 
   const [user, setUser] = useState({
     autenticated: null,
@@ -20,45 +22,65 @@ export function AuthProvider({ children }) {
     role: null,
   });
 
+  const { authUser } = useUserDatabase();
+
+  useEffect(() => {
+    const loadStoragedData = async () => {
+      const storagedUser = await AsyncStorage.getItem("@payment:user");
+
+      if (storagedUser) {
+        setUser({
+          autenticated: true,
+          user: JSON.parse(storagedUser),
+          role: JSON.parse(storagedUser).role,
+        });
+      } else {
+        setUser({
+          autenticated: false,
+          user: null,
+          role: null,
+        });
+      }
+    };
+
+    loadStoragedData();
+  },[]);
+
   const signIn = async ({ email, password }) => {
     const response = await authUser({ email, password });
-
     if (!response) {
       setUser({
         autenticated: false,
         user: null,
         role: null,
       });
+      throw new Error("Usuário ou senha inválidos");
     }
 
-    if (email === "super@email.com" && password === "Super123!") {
-      setUser({
-        autenticated: true,
-        user: { id: 1, name: "Super Usuario", email },
-        role: Role.SUPER,
-      });
-    } else if (email === "adm@email.com" && password === "adm123!") {
-      setUser({
-        autenticated: true,
-        user: { id: 2, name: "Administrador", email },
-        role: Role.ADM,
-      });
-    } else if (email === "user@email.com" && password === "user123!") {
-      setUser({
-        autenticated: true,
-        user: null,
-        role: null,
-      });
-    }
+    await AsyncStorage.setItem("@payment:user", JSON.stringify(response))
+
+    setUser({
+      autenticated: true,
+      user: response,
+      role: response.role,
+    })
+
   };
-
   const signOut = async () => {
+    await AsyncStorage.removeItem("@payment:user");
     setUser({});
   };
 
-  useEffect(() => {
-    console.log("AuthContext: ", user);
-  }, [user]);
+  if (user?.autenticated === null) {
+    return (
+     <View style={{flex: 1, justifyContent: "center", alignItems: "center"}}>
+         <Text style={{ fontSize: 28, marginTop: 15 }}>
+          Carregando Dados do Usuário
+         </Text>
+         <ActivityIndicator size="small" color="#6A5ACD"/>
+     </View>
+     )
+ }
 
   return (
     <AuthContext.Provider value={{ user, signIn, signOut }}>
