@@ -30,34 +30,34 @@ export default function App() {
       <Text style={styles.title}>Aplicativo Pronto para Usar</Text>
       <View style={styles.inputbox}>
         <Ionicons name="mail-open-outline" size={20} color="black" />
-        <TextInput 
-          style={styles.emailinput} 
-          placeholder="E-mail" 
-          value={email} 
+        <TextInput
+          style={styles.emailinput}
+          placeholder="E-mail"
+          value={email}
           onChangeText={setEmail}
         />
       </View>
       <View style={styles.inputbox}>
         <Ionicons name="lock-closed-outline" size={20} color="black" />
-        <TextInput 
-          style={styles.emailinput} 
-          placeholder="Senha" 
-          value={password} 
+        <TextInput
+          style={styles.emailinput}
+          placeholder="Senha"
+          value={password}
           onChangeText={setPassword}
           secureTextEntry={passwordVisibility}
         />
         <Ionicons
-         name={passwordVisibility ? "eye-off-outline" : "eye-outline"}
-         size={20} 
-         color="black" 
-         onPress={tooglePasswordVisibility}
+          name={passwordVisibility ? "eye-off-outline" : "eye-outline"}
+          size={20}
+          color="black"
+          onPress={tooglePasswordVisibility}
         />
       </View>
 
       <Button
-       style={styles.button} 
-       title="Entrar" 
-       onPress={handleEntrarSuper} 
+        style={styles.button}
+        title="Entrar"
+        onPress={handleEntrarSuper}
       />
       <Button title="Sobre" onPress={() => router.push("/about")} />
       <Button
@@ -80,18 +80,18 @@ const styles = StyleSheet.create({
 
   title: {
     fontFamily: "regular",
-    fontSize: 20, 
+    fontSize: 20,
   },
   inputbox: {
     flexDirection: "row",
-    gap: 10,
-    marginHorizontal: 40,
-    marginVertical: 10,
     alignItems: "center",
     borderBottomWidth: 1,
     borderBottomColor: "black",
     borderRadius: 5,
+    width: "90%",
+    gap: 10,
   },
+
   emailinput: {
     flex: 1,
     fontFamily: "regular",
