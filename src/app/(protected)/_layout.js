@@ -64,18 +64,47 @@ const DrawerLayout = () => {
                         drawerIcon: () => <Ionicons name="home-outline" size={20} color="black" />,
                     }} />
 
-                <Drawer.Screen name="list"
+                <Drawer.Screen name="favorites"
                     options={{
-                        drawerLabel: "Listagem",
-                        headerTitle: "Listagem",
-                        drawerIcon: () => <Ionicons name="list-circle-outline" size={20} color="black" />,
+                        drawerLabel: "Favoritos",
+                        headerTitle: "Favoritos",
+                        drawerIcon: () => <Ionicons name="heart-outline" size={20} color="black" />,
                     }} />
 
-                <Drawer.Screen name="payment"
+                <Drawer.Screen name="lidos"
                     options={{
-                        drawerLabel: "Pagamentos",
-                        headerTitle: "Pagamentos",
-                        drawerIcon: () => <Ionicons name="diamond-outline" size={20} color="black" />,
+                        drawerLabel: "Lidos",
+                        headerTitle: "Lidos",
+                        drawerIcon: () => <Ionicons name="battery-full-outline" size={20} color="black" />,
+                    }} />
+
+                    <Drawer.Screen name="lendo"
+                    options={{
+                        drawerLabel: "Lendo",
+                        headerTitle: "lendo",
+                        drawerIcon: () => <Ionicons name="battery-half-outline" size={20} color="black" />,
+                    }} />
+
+
+                     <Drawer.Screen name="ler"
+                    options={{
+                        drawerLabel: "A ler",
+                        headerTitle: "A ler",
+                        drawerIcon: () => <Ionicons name="battery-dead-outline" size={20} color="black" />,
+                    }} />
+
+                    <Drawer.Screen name="addlivros"
+                    options={{
+                        drawerLabel: "Adicionar Livros",
+                        headerTitle: "Adicionar Livros",
+                        drawerIcon: () => <Ionicons name="add-outline" size={20} color="black" />,
+                    }} />
+
+                    <Drawer.Screen name="config"
+                    options={{
+                        drawerLabel: "Configurações",
+                        headerTitle: "Configurações",
+                        drawerIcon: () => <Ionicons name="settings-outline" size={20} color="black" />,
                     }} />
             </Drawer>
         </GestureHandlerRootView>
