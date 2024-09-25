@@ -63,10 +63,17 @@ export function AuthProvider({ children }) {
     })
 
   };
+
   const signOut = async () => {
     await AsyncStorage.removeItem("@payment:user");
-    setUser({});
-  };
+    setUser({
+        autenticated: false,
+        user: null,
+        role: null,
+    });
+    console.log("Usuário deslogado com sucesso.");
+};
+
 
   if (user?.autenticated === null) {
     return (
@@ -80,7 +87,10 @@ export function AuthProvider({ children }) {
  }
 
   return (
-    <AuthContext.Provider value={{ user, signIn, signOut }}>
+    <AuthContext.Provider value={{ user, signIn, signOut: async () => {
+        await AsyncStorage.removeItem("@payment:user");
+        setUser({});
+      } }}>
       {children}
     </AuthContext.Provider>
   );

@@ -29,9 +29,9 @@ export async function initializeDatabase(database) {
         FOREIGN KEY (user_cadastro) REFERENCES users(id)
         );
 
-        INSERT OR REPLACE INTO users (nome, email, senha, role) VALUES ('Super', 'super@email.com', 'A123456a!', 'SUPER');
-        INSERT OR REPLACE INTO users (nome, email, senha, role) VALUES ('Admin', 'admin@email.com', 'A123456a!', 'ADMIN');
-        INSERT OR REPLACE INTO users (nome, email, senha, role) VALUES ('User', 'user@email.com', 'A123456a!', 'USER');
+        INSERT OR REPLACE INTO users (nome, email, senha, role) VALUES ('SUPER', 'super@email.com', 'A123456a!', 'SUPER');
+        INSERT OR REPLACE INTO users (nome, email, senha, role) VALUES ('ADMIN', 'admin@email.com', 'A123456a!', 'ADMIN');
+        INSERT OR REPLACE INTO users (nome, email, senha, role) VALUES ('USER', 'user@email.com', 'A123456a!', 'USER');
         `);
   } catch (error) {
     console.log(error);

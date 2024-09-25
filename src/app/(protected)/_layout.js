@@ -1,52 +1,46 @@
 import { GestureHandlerRootView } from 'react-native-gesture-handler';
 import { Drawer } from 'expo-router/drawer';
-import { Text, Image, TouchableOpacity, View } from 'react-native';
+import { Text, Image, TouchableOpacity, View, StyleSheet } from 'react-native';
 import { DrawerContentScrollView, DrawerItemList } from '@react-navigation/drawer';
 import { useAuth } from '../../hooks/Auth/index';
 import { Ionicons } from '@expo/vector-icons';
-
-
+import { router } from "expo-router";
+import { AuthProvider } from '../../hooks/Auth';
 
 function CustomDrawerContent(props) {
     const { user, signOut } = useAuth();
 
-    return (
-        <View style={{ flex: 1 }}>
-            <View
-                style={{
-                    marginTop: 20,
-                    justifyContent: "center",
-                    alignItems: "center",
-                    backgroundColor: "#f0f0f0",
-                    paddingVertical: 10,
-                }}
-            >
+    const handleSignOut = async () => {
+        await signOut();
+        console.log("Redirecionando para a tela de login...");
+        router.replace("/"); // Redireciona para a página de login
+    };
 
+    return (
+        <View style={styles.container}>
+            <View style={styles.header}>
                 <Image
-                    source={{
-                        uri: 'https://www.github.com/M4rinaVict0ria.png',
-                    }}
-                    style={{ width: 100, height: 100, borderRadius: 50, margin: 10 }}
+                    source={{ uri: 'https://www.github.com/M4rinaVict0ria.png' }}
+                    style={styles.profileImage}
                 />
-                <Text 
-                    style={{ textAlign: "center", fontSize: 16, padding: 10, fontFamily: "regular" }}
-                >
-                    {user?.user?.nome}
+                <Text style={styles.username}>
+                    {user?.user?.nome || 'Nome do Usuário'}
                 </Text>
             </View>
             <DrawerContentScrollView {...props}>
                 <DrawerItemList {...props} />
             </DrawerContentScrollView>
             <TouchableOpacity 
-            onPress={() => signOut()}
+                onPress={handleSignOut}
                 style={{
                     width: '100%',
                     justifyContent: "center",
                     alignItems: "center",
                     height: 50,
                     padding: 10,
-                    backgroundColor: "#0000ff",
-                }}>
+                    backgroundColor: "#6A9AB0",
+                }}
+            >
                 <Text style={{ color: "white" }}>Deslogar</Text>
             </TouchableOpacity>
         </View>
@@ -78,29 +72,28 @@ const DrawerLayout = () => {
                         drawerIcon: () => <Ionicons name="battery-full-outline" size={20} color="black" />,
                     }} />
 
-                    <Drawer.Screen name="lendo"
+                <Drawer.Screen name="lendo"
                     options={{
                         drawerLabel: "Lendo",
-                        headerTitle: "lendo",
+                        headerTitle: "Lendo",
                         drawerIcon: () => <Ionicons name="battery-half-outline" size={20} color="black" />,
                     }} />
 
-
-                     <Drawer.Screen name="ler"
+                <Drawer.Screen name="ler"
                     options={{
                         drawerLabel: "A ler",
                         headerTitle: "A ler",
                         drawerIcon: () => <Ionicons name="battery-dead-outline" size={20} color="black" />,
                     }} />
 
-                    <Drawer.Screen name="addlivros"
+                <Drawer.Screen name="addlivros"
                     options={{
                         drawerLabel: "Adicionar Livros",
                         headerTitle: "Adicionar Livros",
                         drawerIcon: () => <Ionicons name="add-outline" size={20} color="black" />,
                     }} />
 
-                    <Drawer.Screen name="config"
+                <Drawer.Screen name="config"
                     options={{
                         drawerLabel: "Configurações",
                         headerTitle: "Configurações",
@@ -109,9 +102,61 @@ const DrawerLayout = () => {
             </Drawer>
         </GestureHandlerRootView>
     );
-    
 };
 
+const styles = StyleSheet.create({
+    container: {
+        flex: 1,
+        backgroundColor: "white",
+    },
+    header: {
+        marginTop: 20,
+        justifyContent: "center",
+        alignItems: "center",
+        backgroundColor: "#6A9AB0",
+        paddingVertical: 10,
+        shadowColor: "#000",
+        shadowOffset: {
+            width: 0,
+            height: 2,
+        },
+        shadowOpacity: 0.3,
+        shadowRadius: 4,
+        elevation: 5,
+    },
+    profileImage: {
+        width: 100,
+        height: 100,
+        borderRadius: 50,
+        margin: 10,
+    },
+    username: {
+        textAlign: "center",
+        fontSize: 16,
+        padding: 10,
+        fontFamily: "regular",
+        color: "white",
+    },
+    logoutButton: {
+        width: '100%',
+        justifyContent: "center",
+        alignItems: "center",
+        height: 50,
+        padding: 10,
+        backgroundColor: "#6A9AB0",
+        borderTopWidth: 1,
+        borderTopColor: "#ddd",
+    },
+    logoutText: {
+        color: "white",
+        fontSize: 16,
+    },
+});
+
 export default function Layout() {
-    return DrawerLayout();
-}
+    return (
+        <AuthProvider>
+            <DrawerLayout />
+        </AuthProvider>
+    );
+ }

@@ -17,13 +17,13 @@ export function Banner() {
         <View style={styles.container}>
             <PagerView initialPage={0} style={styles.content} onPageSelected={onPageSelected}>
                 <View key="1" style={styles.page}>
-                <Image source={require('../../assets/banner1.png')} style={{width: "90%", height: "148%" }} />
+                <Image source={require('../../assets/banner1.png')} style={{width: "100%", height: "97%" }}  />
                 </View>
                 <View key="2" style={styles.page}>
-                <Image source={require('../../assets/banner2.png')} style={{width: "75%", height: "122%" }}/>
+                <Image source={require('../../assets/banner2.png')} style={{width: "100%", height: "97%" }}/>
                 </View>
                 <View key="3" style={styles.page}>
-                <Image source={require('../../assets/banner3.png')} style={{width: "80%", height: "120%" }}/>
+                <Image source={require('../../assets/banner3.png')} style={{width: "100%", height: "95%" }}/>
                 </View>
             </PagerView>
             <View style={styles.bulletContent}>
@@ -46,13 +46,16 @@ const styles = StyleSheet.create({
         alignItems: 'center',
         justifyContent: 'center',
         width: "100%",
+        height: 200,
     },
     page: {
         justifyContent: 'center',
         alignItems: 'center',
         backgroundColor: "#fff",
-        padding: 10,
-
+        width: "100%",
+        height: "100%",
+        
+    
     },
     bulletContent: {
         flexDirection: 'row',

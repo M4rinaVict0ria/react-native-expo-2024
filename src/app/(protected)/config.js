@@ -36,27 +36,37 @@ const styles = StyleSheet.create({
   },
   title: {
     fontSize: 24,
-    color: '#000000',
+    color: '#333',
     marginBottom: 20,
     textAlign: 'center',
+    fontWeight: 'bold', // Negrito para o título
   },
   input: {
     height: 50,
-    borderColor: '##0000ff',
+    borderColor: 'grey',
     borderWidth: 1,
     borderRadius: 5,
     paddingHorizontal: 10,
     marginBottom: 15,
+    backgroundColor: '#fff', // Fundo branco para os inputs
+    shadowColor: '#000', // Sombra para os inputs
+    shadowOffset: {
+      width: 0,
+      height: 2,
+    },
+    shadowOpacity: 0.1,
+    shadowRadius: 4,
+    elevation: 3, // Sombra para Android
   },
   button: {
-    backgroundColor: '#0000ff',
+    backgroundColor: '#6A9AB0',
     borderRadius: 5,
     padding: 15,
     alignItems: 'center',
   },
   buttonText: {
     fontSize: 16,
-    color: '#FFFFFF',
+    color: 'white',
   },
 });
 
