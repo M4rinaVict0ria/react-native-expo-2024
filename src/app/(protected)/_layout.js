@@ -7,14 +7,14 @@ import { Ionicons } from '@expo/vector-icons';
 import { router } from "expo-router";
 import { AuthProvider } from '../../hooks/Auth';
 
+
 function CustomDrawerContent(props) {
     const { user, signOut } = useAuth();
 
-    const handleSignOut = async () => {
-        await signOut();
-        console.log("Redirecionando para a tela de login...");
-        router.replace("/"); // Redireciona para a página de login
-    };
+    const handleSignOut = () => {
+        signOut();
+        router.replace("signin");
+    }
 
     return (
         <View style={styles.container}>

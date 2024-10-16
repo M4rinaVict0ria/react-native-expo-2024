@@ -1,5 +1,5 @@
 import { createContext, useContext, useEffect, useState } from "react";
-import { useUserDatabase } from "../../database/useUsersDatabase";
+import { useUsersDatabase } from "../../database/useUsersDatabase";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { ActivityIndicator, Text, View } from "react-native";
 
@@ -11,15 +11,14 @@ export const Role = {
   USER: "USER",
 };
 
-export function AuthProvider({ children }) {
-
+export const AuthProvider = ({ children }) => {
   const [user, setUser] = useState({
     autenticated: null,
     user: null,
     role: null,
   });
 
-  const { authUser } = useUserDatabase();
+  const { authUser } = useUsersDatabase();
 
   useEffect(() => {
     const loadStoragedData = async () => {
@@ -41,7 +40,7 @@ export function AuthProvider({ children }) {
     };
 
     loadStoragedData();
-  },[]);
+  }, []);
 
   const signIn = async ({ email, password }) => {
     const response = await authUser({ email, password });
@@ -54,47 +53,36 @@ export function AuthProvider({ children }) {
       throw new Error("Usuário ou senha inválidos");
     }
 
-    await AsyncStorage.setItem("@payment:user", JSON.stringify(response))
+    await AsyncStorage.setItem("@payment:user", JSON.stringify(response));
 
     setUser({
       autenticated: true,
       user: response,
       role: response.role,
-    })
-
+    });
   };
-
   const signOut = async () => {
     await AsyncStorage.removeItem("@payment:user");
-    setUser({
-        autenticated: false,
-        user: null,
-        role: null,
-    });
-    console.log("Usuário deslogado com sucesso.");
-};
-
+    setUser({});
+  };
 
   if (user?.autenticated === null) {
     return (
-     <View style={{flex: 1, justifyContent: "center", alignItems: "center"}}>
-         <Text style={{ fontSize: 28, marginTop: 15 }}>
+      <View style={{ flex: 1, justifyContent: "center", alignItems: "center" }}>
+        <Text style={{ fontSize: 28, marginTop: 15 }}>
           Carregando Dados do Usuário
-         </Text>
-         <ActivityIndicator size="small" color="#6A5ACD"/>
-     </View>
-     )
- }
+        </Text>
+        <ActivityIndicator size="small" color="#6A5ACD" />
+      </View>
+    );
+  }
 
   return (
-    <AuthContext.Provider value={{ user, signIn, signOut: async () => {
-        await AsyncStorage.removeItem("@payment:user");
-        setUser({});
-      } }}>
+    <AuthContext.Provider value={{ user, signIn, signOut }}>
       {children}
     </AuthContext.Provider>
   );
-}
+};
 
 export function useAuth() {
   const context = useContext(AuthContext);

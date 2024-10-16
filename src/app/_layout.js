@@ -4,34 +4,28 @@ import { useAuth } from "../hooks/Auth";
 import { useEffect } from "react";
 
 const StackLayout = () => {
-   const { user } = useAuth();
-   const segments = useSegments();
+  const {user} = useAuth();
 
-   useEffect(() => {
-      const inAuthGroup = segments[0] === "(protected)";
+ useEffect(() => {
+  if ( (!user?.autenticated)) {
+        router.replace("signin")
+       } else {
+        router.replace("(protected)");
+       }
+ }, [user]);
 
-
-      if (!user?.autenticated && inAuthGroup) {
-         router.replace("/");
-      } else {
-         if (user?.autenticated) {
-         router.replace("/(protected)");
-         }
-      }
-      // console.log("useEffect do layout", user)
-   }, [user]);
-
-   return (
-      <Stack>
-         <Stack.Screen name="index"  options={{ headerShown: false}} />
-         <Stack.Screen name="(protected)" options={{ headerShown: false}} />
-      </Stack>
-   );
- }; 
+  return (
+    <Stack>
+      <Stack.Screen name="signin" options={{ headerShown: false }} />
+      <Stack.Screen name="about" options={{ headerShown: false }} />
+      <Stack.Screen name="(protected)" options={{ headerShown: false }} />
+    </Stack>
+  );
+};
 export default function Layout() {
-return (
-   <AppProvider>
+  return (
+    <AppProvider>
       <StackLayout />
-   </AppProvider>
-   );
+    </AppProvider>
+  );
 }

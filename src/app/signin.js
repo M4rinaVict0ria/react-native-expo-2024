@@ -21,7 +21,6 @@ export default function App() {
   const handleLogin = async () => {
     try {
       await signIn({ email, password });
-      router.replace("/");
     } catch (error) {
       setErrorMessage(error.message);
       console.log(error);

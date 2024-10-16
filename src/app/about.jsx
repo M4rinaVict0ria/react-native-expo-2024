@@ -9,7 +9,7 @@ export default function About() {
                 Luma é uma ferramenta projetada para leitores que desejam gerenciar suas coleções de livros com facilidade, tanto no formato físico quanto digital. Ele oferece uma experiência completa para organizar, acompanhar e explorar leituras de forma prática e interativa.
             </Text>
             <View style={styles.buttonContainer}>
-                <Button title="Voltar" onPress={() => { router.replace("/") }} color="#6A9AB0" />
+                <Button title="Voltar" onPress={() => router.back()} color="#6A9AB0" />
             </View>
         </View>
     );

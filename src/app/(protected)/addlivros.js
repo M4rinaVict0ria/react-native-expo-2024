@@ -2,10 +2,12 @@ import React, { useState } from 'react';
 import { View, TextInput, FlatList, Text, StyleSheet, Alert } from 'react-native';
 import { TouchableOpacity } from 'react-native-gesture-handler';
 
+
 const Favorites = () => {
   const [title, setTitle] = useState('');
   const [author, setAuthor] = useState('');
   const [favoriteBooks, setFavoriteBooks] = useState([]);
+  
 
   const handleAddBook = () => {
     if (!title || !author) {

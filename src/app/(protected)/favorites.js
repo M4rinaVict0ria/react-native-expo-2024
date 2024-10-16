@@ -1,6 +1,7 @@
 import { Text, View, StyleSheet } from "react-native";
 import { Ionicons } from '@expo/vector-icons'; // Certifique-se de que a biblioteca está instalada
 
+
 export default function Favorites() {
     return (
         <View style={styles.container}>
