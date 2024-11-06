@@ -1,6 +1,8 @@
 import React, { useState } from 'react';
 import { View, TextInput, FlatList, Text, StyleSheet, Alert, Image, TouchableOpacity } from 'react-native';
 import * as ImagePicker from 'expo-image-picker';
+import {NavigationContainer} from '@react-navigation/native';
+import {createNativeStackNavigator} from '@react-navigation/native-stack';
 
 
 const AddBook = ({ navigation }) => {
@@ -127,7 +129,7 @@ const AddBook = ({ navigation }) => {
                 <View style={styles.expandedInfo}>
                   <Text style={styles.descriptionText}>{item.description}</Text>
                   <View style={styles.categoryButtons}>
-                    {['Favorites', 'Lidos', 'Lendo', 'A Ler'].map((category) => (
+                    {['Favoritos', 'Lidos', 'Lendo', 'A Ler'].map((category) => (
                       <TouchableOpacity
                         key={category}
                         style={styles.categoryButton}
@@ -220,6 +222,7 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     justifyContent: 'space-between',
     marginTop: 10,
+    marginBottom: 0,
   },
   categoryButton: {
     backgroundColor: '#6A9AB0',
