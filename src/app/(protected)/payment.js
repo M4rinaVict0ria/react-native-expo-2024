@@ -99,6 +99,10 @@ export default function Payment() {
       observacao,
     };
 
+    console.log("----payment----");
+    console.log(payment);
+    return false;
+
     try {
       const result = await paymentSchema.parseAsync(payment);
       const { insertedID } = await createPayment(payment);
