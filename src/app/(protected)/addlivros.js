@@ -1,32 +1,76 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { View, TextInput, FlatList, Text, StyleSheet, Alert, Image, TouchableOpacity } from 'react-native';
 import * as ImagePicker from 'expo-image-picker';
-import {NavigationContainer} from '@react-navigation/native';
-import {createNativeStackNavigator} from '@react-navigation/native-stack';
+import AsyncStorage from '@react-native-async-storage/async-storage';
+import { useNavigation } from '@react-navigation/native'; // Importando o hook useNavigation
 
+const AddBook = () => {
+  const navigation = useNavigation();  // Usando useNavigation para acessar a navegação
 
-const AddBook = ({ navigation }) => {
   const [title, setTitle] = useState('');
   const [author, setAuthor] = useState('');
   const [description, setDescription] = useState('');
   const [coverImage, setCoverImage] = useState('');
   const [books, setBooks] = useState([]);
+  const [isEditing, setIsEditing] = useState(false);
+  const [editIndex, setEditIndex] = useState(null);
 
+  // Função para carregar os livros salvos ao iniciar o app
+  const loadBooks = async () => {
+    try {
+      const storedBooks = await AsyncStorage.getItem('books');
+      if (storedBooks) {
+        setBooks(JSON.parse(storedBooks));
+      }
+    } catch (error) {
+      console.error("Erro ao carregar os livros", error);
+    }
+  };
+
+  // Carregar livros ao iniciar o componente
+  useEffect(() => {
+    loadBooks();
+  }, []);
+
+  // Função para salvar os livros no AsyncStorage
+  const saveBooks = async (booksToSave) => {
+    try {
+      await AsyncStorage.setItem('books', JSON.stringify(booksToSave));
+    } catch (error) {
+      console.error("Erro ao salvar os livros", error);
+    }
+  };
+
+  // Função para adicionar ou editar livros
   const handleAddBook = () => {
     if (!title || !author || !description || !coverImage) {
       Alert.alert('Erro', 'Por favor, preencha todos os campos.');
       return;
     }
-    setBooks((currentBooks) => [
-      ...currentBooks,
-      { title, author, description, coverImage, expanded: false },
-    ]);
+
+    const newBook = { title, author, description, coverImage, expanded: false };
+
+    if (isEditing && editIndex !== null) {
+      const updatedBooks = [...books];
+      updatedBooks[editIndex] = newBook;  // Substitui o livro no índice correto
+      setBooks(updatedBooks);
+      saveBooks(updatedBooks);
+      setIsEditing(false);
+      setEditIndex(null);
+    } else {
+      const updatedBooks = [...books, newBook];
+      setBooks(updatedBooks);
+      saveBooks(updatedBooks);
+    }
+
+    // Resetando os campos após adicionar ou salvar
     setTitle('');
     setAuthor('');
     setDescription('');
     setCoverImage('');
   };
 
+  // Função para remover livros
   const handleRemoveBook = (index) => {
     Alert.alert(
       "Remover Livro",
@@ -35,11 +79,10 @@ const AddBook = ({ navigation }) => {
         { text: "Cancelar", style: "cancel" },
         {
           text: "Remover", onPress: () => {
-            setBooks((currentBooks) => {
-              const updatedBooks = [...currentBooks];
-              updatedBooks.splice(index, 1);
-              return updatedBooks;
-            });
+            const updatedBooks = [...books];
+            updatedBooks.splice(index, 1);
+            setBooks(updatedBooks);
+            saveBooks(updatedBooks);
             Alert.alert("Livro Removido", "O livro foi removido com sucesso.");
           }
         },
@@ -47,8 +90,18 @@ const AddBook = ({ navigation }) => {
     );
   };
 
-  
+  // Função para editar livros
+  const handleEditBook = (index) => {
+    const bookToEdit = books[index];
+    setTitle(bookToEdit.title);
+    setAuthor(bookToEdit.author);
+    setDescription(bookToEdit.description);
+    setCoverImage(bookToEdit.coverImage);
+    setIsEditing(true);
+    setEditIndex(index);
+  };
 
+  // Função para selecionar a capa do livro
   const handleImagePicker = async () => {
     const permissionResult = await ImagePicker.requestMediaLibraryPermissionsAsync();
     if (permissionResult.granted === false) {
@@ -72,14 +125,16 @@ const AddBook = ({ navigation }) => {
     setBooks((currentBooks) => {
       const updatedBooks = [...currentBooks];
       updatedBooks[index].expanded = !updatedBooks[index].expanded;
+      saveBooks(updatedBooks);
       return updatedBooks;
     });
   };
 
   const addToCategory = (category) => {
-    const newBook = { title, author, description, coverImage };
-    navigation.navigate(category, { book: newBook });
+    const newBook = { title, author, description, coverImage };  // O livro que você deseja passar
+    navigation.navigate(category, { book: newBook });  // Navega para a categoria (Ler, Favoritos, etc.)
   };
+  
 
   return (
     <View style={styles.container}>
@@ -101,19 +156,19 @@ const AddBook = ({ navigation }) => {
         value={description}
         onChangeText={setDescription}
       />
-      
+
       <TouchableOpacity style={styles.imageButton} onPress={handleImagePicker}>
         <Text style={styles.imageButtonText}>Selecionar Capa do Livro</Text>
       </TouchableOpacity>
-      
+
       {coverImage ? (
         <Image source={{ uri: coverImage }} style={styles.coverImagePreview} />
       ) : null}
 
       <TouchableOpacity style={styles.button} onPress={handleAddBook}>
-        <Text style={styles.buttonText}>ADICIONAR</Text>
+        <Text style={styles.buttonText}>{isEditing ? 'SALVAR' : 'ADICIONAR'}</Text>
       </TouchableOpacity>
-      
+
       <FlatList
         data={books}
         keyExtractor={(_, index) => index.toString()}
@@ -142,16 +197,19 @@ const AddBook = ({ navigation }) => {
                 </View>
               )}
             </View>
+            <TouchableOpacity style={styles.editButton} onPress={() => handleEditBook(index)}>
+              <Text style={styles.editButtonText}>EDITAR</Text>
+            </TouchableOpacity>
             <TouchableOpacity style={styles.removeButton} onPress={() => handleRemoveBook(index)}>
               <Text style={styles.removeButtonText}>REMOVER</Text>
             </TouchableOpacity>
-
           </View>
         )}
       />
     </View>
   );
 };
+
 
 const styles = StyleSheet.create({
   container: {
@@ -248,6 +306,17 @@ const styles = StyleSheet.create({
     marginLeft: 10,
   },
   removeButtonText: {
+    color: 'white',
+    fontWeight: 'bold',
+    textTransform: 'uppercase',
+  },
+  editButton: {
+    backgroundColor: '#FFB74D',
+    borderRadius: 5,
+    padding: 10,
+    marginLeft: 10,
+  },
+  editButtonText: {
     color: 'white',
     fontWeight: 'bold',
     textTransform: 'uppercase',

@@ -1,15 +1,27 @@
+import React from 'react';
 import { Text, View, StyleSheet } from "react-native";
-import { Ionicons } from '@expo/vector-icons'; // Certifique-se de que a biblioteca está instalada
+import { Ionicons } from '@expo/vector-icons';
 
+export default function Favorites({ route }) {
+  // Verificando se os parâmetros existem, para evitar o erro de undefined
+  const { book } = route?.params || {}; // Acessando o livro passado via navegação
 
-export default function Favorites() {
-    return (
-        <View style={styles.container}>
-            <Ionicons name="heart-outline" size={100} color="#6A9AB0" />
-            <Text style={styles.message}>Você não tem livros favoritos</Text>
-            <Text style={styles.subMessage}>Adicione alguns e eles aparecerão aqui!</Text>
-        </View>
-    );
+  return (
+    <View style={styles.container}>
+      <Ionicons name="heart-outline" size={100} color="#6A9AB0" />
+      {book ? (
+        <>
+          <Text style={styles.message}>Livro: {book.title}</Text>
+          <Text style={styles.subMessage}>Autor: {book.author}</Text>
+        </>
+      ) : (
+        <>
+          <Text style={styles.message}>Você não tem livros favoritos</Text>
+          <Text style={styles.subMessage}>Adicione alguns e eles aparecerão aqui!</Text>
+        </>
+      )}
+    </View>
+  );
 }
 
 const styles = StyleSheet.create({

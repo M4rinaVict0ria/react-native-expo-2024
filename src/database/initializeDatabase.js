@@ -34,6 +34,19 @@ export async function initializeDatabase(database) {
         FOREIGN KEY (user_cadastro) REFERENCES users(id)
         );
 
+        CREATE TABLE IF NOT EXISTS books (
+        id INTEGER PRIMARY KEY AUTOINCREMENT,
+        titulo TEXT NOT NULL,
+        autor TEXT NOT NULL,
+        descricao TEXT,
+        capa BLOB,  -- Tipo para armazenar imagem da capa em formato binário ou URL se estiver em um servidor
+        usuario_id INTEGER, -- Relacionamento com o id do usuário que adicionou o livro
+        status_leitura TEXT CHECK (status_leitura IN ('A Ler', 'Lendo', 'Lido', 'Favorito')),
+        created_at DATE DEFAULT CURRENT_TIMESTAMP,
+        updated_at DATE,
+        FOREIGN KEY (usuario_id) REFERENCES users(id)
+    );
+
         CREATE INDEX IF NOT EXISTS idx_users_nome ON users (nome);
 
         CREATE INDEX IF NOT EXISTS idx_payments_data_pagamento ON payments (data_pagamento);

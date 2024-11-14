@@ -1,14 +1,41 @@
 import React, { useState } from "react";
 import { StyleSheet, Text, View, Image, TouchableOpacity } from "react-native";
 import PagerView from "react-native-pager-view";
+import { useNavigation } from '@react-navigation/native';
 
 // Corrigindo o caminho para as imagens
 import Banner1 from '../assets/Banner/banner1.png';
 import Banner2 from '../assets/Banner/banner2.png';
 import Banner3 from '../assets/Banner/banner3.png';
 
-export function Banner() {
+import { createStackNavigator } from '@react-navigation/stack';
+import AddBook from './(protected)/addlivros';
+import Favoritos from './(protected)/favorites'; // Importe a tela Favoritos
+import Lidos from './(protected)/lidos';
+import Lendo from './(protected)/lendo';
+import Ler from './(protected)/ler';
+
+const Stack = createStackNavigator();
+
+const AppNavigator = () => {
+  return (
+    <Stack.Navigator>
+      <Stack.Screen name="addlivros" component={AddBook} />
+      <Stack.Screen name="favoritos" component={Favoritos} />
+      <Stack.Screen name="lidos" component={Lidos} />
+      <Stack.Screen name="lendo" component={Lendo} />
+      <Stack.Screen name="ler" component={Ler} />
+      {/* Adicione outras rotas conforme necessário */}
+    </Stack.Navigator>
+  );
+};
+
+
+
+
+export function Banners() {
     const [page, setPage] = useState(0);
+    const navigation = useNavigation();
 
     const onPageSelected = (e) => {
         setPage(e.nativeEvent.position);
@@ -22,28 +49,14 @@ export function Banner() {
                 style={styles.content}
                 onPageSelected={onPageSelected}
             >
-                {/* Banner 1 */}
                 <View key="1" style={styles.page}>
-                    <Image
-                        source={Banner1} // Atualizado para usar a variável de importação
-                        style={styles.bannerImage}
-                    />
+                    <Image source={Banner1} style={styles.bannerImage} />
                 </View>
-
-                {/* Banner 2 */}
                 <View key="2" style={styles.page}>
-                    <Image
-                        source={Banner2} // Atualizado para usar a variável de importação
-                        style={styles.bannerImage}
-                    />
+                    <Image source={Banner2} style={styles.bannerImage} />
                 </View>
-
-                {/* Banner 3 */}
                 <View key="3" style={styles.page}>
-                    <Image
-                        source={Banner3} // Atualizado para usar a variável de importação
-                        style={styles.bannerImage}
-                    />
+                    <Image source={Banner3} style={styles.bannerImage} />
                 </View>
             </PagerView>
 
@@ -72,16 +85,16 @@ export function Banner() {
             <View style={styles.categoriesContainer}>
                 <Text style={styles.categoriesTitle}>Explore nossas categorias:</Text>
                 <View style={styles.categoryList}>
-                    <TouchableOpacity style={styles.categoryButton}>
+                    <TouchableOpacity style={styles.categoryButton} onPress={() => navigation.navigate('favorites')}>
                         <Text style={styles.categoryButtonText}>Favoritos</Text>
                     </TouchableOpacity>
-                    <TouchableOpacity style={styles.categoryButton}>
+                    <TouchableOpacity style={styles.categoryButton} onPress={() => navigation.navigate('lidos')}>
                         <Text style={styles.categoryButtonText}>Lidos</Text>
                     </TouchableOpacity>
-                    <TouchableOpacity style={styles.categoryButton}>
+                    <TouchableOpacity style={styles.categoryButton} onPress={() => navigation.navigate('lendo')}>
                         <Text style={styles.categoryButtonText}>Lendo</Text>
                     </TouchableOpacity>
-                    <TouchableOpacity style={styles.categoryButton}>
+                    <TouchableOpacity style={styles.categoryButton} onPress={() => navigation.navigate('ler')}>
                         <Text style={styles.categoryButtonText}>A Ler</Text>
                     </TouchableOpacity>
                 </View>
@@ -90,121 +103,10 @@ export function Banner() {
             {/* Botão de Ação para Adicionar um Novo Livro */}
             <View style={styles.ctaContainer}>
                 <Text style={styles.ctaText}>Pronto para começar sua jornada literária?</Text>
-                <TouchableOpacity style={styles.ctaButton}>
+                <TouchableOpacity style={styles.ctaButton} onPress={() => navigation.navigate('addlivros')}>
                     <Text style={styles.ctaButtonText}>Adicionar Novo Livro</Text>
                 </TouchableOpacity>
             </View>
         </View>
     );
 }
-
-const styles = StyleSheet.create({
-    container: {
-        flex: 1,
-        backgroundColor: "#fff",
-    },
-    content: {
-        height: 200, // Tamanho fixo para os banners
-    },
-    page: {
-        justifyContent: 'center',
-        alignItems: 'center',
-    },
-    bannerImage: {
-        width: '100%',
-        height: '100%',
-        resizeMode: 'cover',
-    },
-    bulletContent: {
-        flexDirection: 'row',
-        justifyContent: 'center',
-        marginTop: 10,
-    },
-    bullet: {
-        width: 10,
-        height: 10,
-        borderRadius: 5,
-        backgroundColor: "#999",
-        margin: 5,
-    },
-    activeBullet: {
-        backgroundColor: "#000",
-    },
-    introContainer: {
-        padding: 20,
-        alignItems: 'center',
-        backgroundColor: '#f0f8ff', // Light blue background
-        marginTop: 20,
-        borderRadius: 8,
-        marginHorizontal: 20,
-    },
-    introTitle: {
-        fontSize: 24,
-        fontWeight: 'bold',
-        color: '#333',
-    },
-    introText: {
-        fontSize: 16,
-        color: '#666',
-        textAlign: 'center',
-        marginTop: 10,
-    },
-    categoriesContainer: {
-        marginTop: 30,
-        paddingHorizontal: 20,
-    },
-    categoriesTitle: {
-        fontSize: 22,
-        fontWeight: 'bold',
-        marginBottom: 15,
-        color: '#333',
-    },
-    categoryList: {
-        flexDirection: 'row',
-        flexWrap: 'wrap',
-        justifyContent: 'space-between',
-    },
-    categoryButton: {
-        backgroundColor: '#6A9AB0',
-        paddingVertical: 12,
-        paddingHorizontal: 20,
-        borderRadius: 5,
-        marginBottom: 10,
-        width: '48%',
-        alignItems: 'center',
-    },
-    categoryButtonText: {
-        color: '#fff',
-        fontWeight: 'bold',
-    },
-    ctaContainer: {
-        marginTop: 40,
-        padding: 20,
-        backgroundColor: '#fff',
-        borderRadius: 8,
-        marginHorizontal: 20,
-        alignItems: 'center',
-        shadowColor: "#000",
-        shadowOffset: { width: 0, height: 2 },
-        shadowOpacity: 0.1,
-        shadowRadius: 5,
-        elevation: 5,
-    },
-    ctaText: {
-        fontSize: 18,
-        fontWeight: 'bold',
-        color: '#333',
-    },
-    ctaButton: {
-        marginTop: 20,
-        backgroundColor: '#6A9AB0',
-        paddingVertical: 12,
-        paddingHorizontal: 20,
-        borderRadius: 5,
-    },
-    ctaButtonText: {
-        color: '#fff',
-        fontWeight: 'bold',
-        textAlign: 'center',
-    },
-});

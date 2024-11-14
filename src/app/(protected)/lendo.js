@@ -1,7 +1,7 @@
 import { Text, View, StyleSheet } from "react-native";
 import { Ionicons } from '@expo/vector-icons'; // Certifique-se de que a biblioteca está instalada
 
-export default function Lidos() {
+export default function Lendo() {
     return (
         <View style={styles.container}>
             <Ionicons name="book-outline" size={100} color="#6A9AB0" />
