@@ -15,13 +15,18 @@ import Lidos from './(protected)/lidos';
 import Lendo from './(protected)/lendo';
 import Ler from './(protected)/ler';
 
+const App = () => {
+    return;
+  };
+  
+
 const Stack = createStackNavigator();
 
 const AppNavigator = () => {
   return (
     <Stack.Navigator>
       <Stack.Screen name="addlivros" component={AddBook} />
-      <Stack.Screen name="favoritos" component={Favoritos} />
+      <Stack.Screen name="favorites" component={Favoritos} />
       <Stack.Screen name="lidos" component={Lidos} />
       <Stack.Screen name="lendo" component={Lendo} />
       <Stack.Screen name="ler" component={Ler} />
@@ -110,3 +115,5 @@ export function Banners() {
         </View>
     );
 }
+
+export default App;

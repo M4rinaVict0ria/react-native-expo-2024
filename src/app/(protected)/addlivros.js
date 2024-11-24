@@ -2,10 +2,10 @@ import React, { useState, useEffect } from 'react';
 import { View, TextInput, FlatList, Text, StyleSheet, Alert, Image, TouchableOpacity } from 'react-native';
 import * as ImagePicker from 'expo-image-picker';
 import AsyncStorage from '@react-native-async-storage/async-storage';
-import { useNavigation } from '@react-navigation/native'; // Importando o hook useNavigation
+import { useNavigation } from '@react-navigation/native';
 
 const AddBook = () => {
-  const navigation = useNavigation();  // Usando useNavigation para acessar a navegação
+  const navigation = useNavigation();
 
   const [title, setTitle] = useState('');
   const [author, setAuthor] = useState('');
@@ -15,7 +15,18 @@ const AddBook = () => {
   const [isEditing, setIsEditing] = useState(false);
   const [editIndex, setEditIndex] = useState(null);
 
-  // Função para carregar os livros salvos ao iniciar o app
+  // Mapeamento entre nome da categoria visível e nome do arquivo
+  const categoryMapping = {
+    'Favoritos': 'favorites', 
+    'Lidos': 'lidos', 
+    'Lendo': 'lendo',
+    'A Ler': 'ler'
+  };
+
+  useEffect(() => {
+    loadBooks();
+  }, []);
+
   const loadBooks = async () => {
     try {
       const storedBooks = await AsyncStorage.getItem('books');
@@ -27,12 +38,6 @@ const AddBook = () => {
     }
   };
 
-  // Carregar livros ao iniciar o componente
-  useEffect(() => {
-    loadBooks();
-  }, []);
-
-  // Função para salvar os livros no AsyncStorage
   const saveBooks = async (booksToSave) => {
     try {
       await AsyncStorage.setItem('books', JSON.stringify(booksToSave));
@@ -41,7 +46,6 @@ const AddBook = () => {
     }
   };
 
-  // Função para adicionar ou editar livros
   const handleAddBook = () => {
     if (!title || !author || !description || !coverImage) {
       Alert.alert('Erro', 'Por favor, preencha todos os campos.');
@@ -52,7 +56,7 @@ const AddBook = () => {
 
     if (isEditing && editIndex !== null) {
       const updatedBooks = [...books];
-      updatedBooks[editIndex] = newBook;  // Substitui o livro no índice correto
+      updatedBooks[editIndex] = newBook;
       setBooks(updatedBooks);
       saveBooks(updatedBooks);
       setIsEditing(false);
@@ -63,14 +67,12 @@ const AddBook = () => {
       saveBooks(updatedBooks);
     }
 
-    // Resetando os campos após adicionar ou salvar
     setTitle('');
     setAuthor('');
     setDescription('');
     setCoverImage('');
   };
 
-  // Função para remover livros
   const handleRemoveBook = (index) => {
     Alert.alert(
       "Remover Livro",
@@ -90,7 +92,6 @@ const AddBook = () => {
     );
   };
 
-  // Função para editar livros
   const handleEditBook = (index) => {
     const bookToEdit = books[index];
     setTitle(bookToEdit.title);
@@ -101,7 +102,6 @@ const AddBook = () => {
     setEditIndex(index);
   };
 
-  // Função para selecionar a capa do livro
   const handleImagePicker = async () => {
     const permissionResult = await ImagePicker.requestMediaLibraryPermissionsAsync();
     if (permissionResult.granted === false) {
@@ -130,11 +130,24 @@ const AddBook = () => {
     });
   };
 
-  const addToCategory = (category) => {
-    const newBook = { title, author, description, coverImage };  // O livro que você deseja passar
-    navigation.navigate(category, { book: newBook });  // Navega para a categoria (Ler, Favoritos, etc.)
+  const addToCategory = async (category, title, author, description, coverImage) => {
+    try {
+      const newBook = { title, author, description, coverImage };
+
+      const categoryKey = categoryMapping[category]; // Obtém o nome correto do arquivo
+      const storedBooks = await AsyncStorage.getItem(categoryKey);
+      const booksInCategory = storedBooks ? JSON.parse(storedBooks) : [];
+
+      booksInCategory.push(newBook);
+
+      await AsyncStorage.setItem(categoryKey, JSON.stringify(booksInCategory));
+
+      navigation.navigate(categoryKey);  // Navega para a categoria correta
+    } catch (error) {
+      Alert.alert("Erro", "Não foi possível adicionar o livro à categoria.");
+      console.error("Erro ao adicionar o livro à categoria", error);
+    }
   };
-  
 
   return (
     <View style={styles.container}>
@@ -188,7 +201,7 @@ const AddBook = () => {
                       <TouchableOpacity
                         key={category}
                         style={styles.categoryButton}
-                        onPress={() => addToCategory(category)}
+                        onPress={() => addToCategory(category, item.title, item.author, item.description, item.coverImage)}
                       >
                         <Text style={styles.categoryButtonText}>{category}</Text>
                       </TouchableOpacity>
@@ -209,6 +222,7 @@ const AddBook = () => {
     </View>
   );
 };
+
 
 
 const styles = StyleSheet.create({
