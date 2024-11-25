@@ -2,13 +2,18 @@ import React, { useState, useEffect } from 'react';
 import { Text, View, StyleSheet, FlatList, TouchableOpacity, Alert, Image } from "react-native";
 import { Ionicons } from '@expo/vector-icons';
 import AsyncStorage from '@react-native-async-storage/async-storage';
+import { useIsFocused } from '@react-navigation/native'; // Hook para detectar o foco da tela
 
 export default function Lendo() {
     const [readingBooks, setReadingBooks] = useState([]);
+    const isFocused = useIsFocused(); // Detecta se a tela está ativa
 
+    // Recarrega os livros ao ganhar foco
     useEffect(() => {
-        loadReadingBooks();
-    }, []);
+        if (isFocused) {
+            loadReadingBooks();
+        }
+    }, [isFocused]);
 
     const loadReadingBooks = async () => {
         try {
@@ -31,7 +36,7 @@ export default function Lendo() {
                     text: "Remover", onPress: async () => {
                         try {
                             const updatedBooks = readingBooks.filter(book => book.title !== bookToRemove.title);
-                            setReadingBooks(updatedBooks);
+                            setReadingBooks(updatedBooks); // Atualiza o estado local
                             await AsyncStorage.setItem('lendo', JSON.stringify(updatedBooks)); // Atualiza o AsyncStorage
                         } catch (error) {
                             console.error("Erro ao remover o livro da lista de leitura", error);
@@ -93,7 +98,6 @@ const styles = StyleSheet.create({
         textAlign: 'center',
         letterSpacing: 1,
     },
-    
     bookCard: {
         flexDirection: 'row',
         backgroundColor: '#fff',

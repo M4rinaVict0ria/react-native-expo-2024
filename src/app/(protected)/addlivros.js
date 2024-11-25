@@ -132,7 +132,8 @@ const AddBook = () => {
 
   const addToCategory = async (category, title, author, description, coverImage) => {
     try {
-      const newBook = { title, author, description, coverImage };
+      //const newBook = { title, author, description, coverImage };
+      const newBook = { title, author, description, coverImage, category };
 
       const categoryKey = categoryMapping[category]; // Obtém o nome correto do arquivo
       const storedBooks = await AsyncStorage.getItem(categoryKey);

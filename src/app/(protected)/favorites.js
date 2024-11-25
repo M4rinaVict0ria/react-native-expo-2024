@@ -2,19 +2,24 @@ import React, { useState, useEffect } from 'react';
 import { Text, View, StyleSheet, Image, FlatList, TouchableOpacity, Alert } from "react-native";
 import { Ionicons } from '@expo/vector-icons';
 import AsyncStorage from '@react-native-async-storage/async-storage';
+import { useIsFocused } from '@react-navigation/native'; // Hook para detectar o foco da tela
 
 export default function Favoritos({ route }) {
   const [favoriteBooks, setFavoriteBooks] = useState([]);
+  const isFocused = useIsFocused(); // Detecta se a tela está ativa
 
+  // Recarrega os favoritos sempre que a tela ganha o foco
   useEffect(() => {
-    loadFavoriteBooks();
-  }, []);
+    if (isFocused) {
+      loadFavoriteBooks();
+    }
+  }, [isFocused]);
 
   const loadFavoriteBooks = async () => {
     try {
-      const storedBooks = await AsyncStorage.getItem('favorites'); // Carregar livros de favoritos
+      const storedBooks = await AsyncStorage.getItem('favorites'); // Carrega os livros dos favoritos
       if (storedBooks) {
-        setFavoriteBooks(JSON.parse(storedBooks)); // Atualiza o estado com os livros favoritos
+        setFavoriteBooks(JSON.parse(storedBooks));
       }
     } catch (error) {
       console.error("Erro ao carregar os livros favoritos", error);
@@ -28,10 +33,11 @@ export default function Favoritos({ route }) {
       [
         { text: "Cancelar", style: "cancel" },
         {
-          text: "Remover", onPress: async () => {
+          text: "Remover",
+          onPress: async () => {
             try {
               const updatedBooks = favoriteBooks.filter(book => book.title !== bookToRemove.title);
-              setFavoriteBooks(updatedBooks);
+              setFavoriteBooks(updatedBooks); // Atualiza o estado local
               await AsyncStorage.setItem('favorites', JSON.stringify(updatedBooks)); // Atualiza o AsyncStorage
             } catch (error) {
               console.error("Erro ao remover o livro dos favoritos", error);
@@ -83,88 +89,69 @@ const styles = StyleSheet.create({
     flex: 1,
     justifyContent: 'center',
     backgroundColor: "#E9F5FB",
-    padding: 20,
+    padding: 20
   },
   favoriteBooksTitle: {
     fontSize: 26,
     fontWeight: 'bold',
-    color: '#6A9AB0', // Cor harmonizada com a paleta do app
+    color: '#6A9AB0',
     marginBottom: 20,
-    textAlign: 'center',
-    letterSpacing: 1,
+    textAlign: 'center'
   },
-  
   bookCard: {
     flexDirection: 'row',
     backgroundColor: '#fff',
     borderRadius: 12,
     padding: 15,
     marginBottom: 20,
-    shadowColor: '#000',
-    shadowOffset: { width: 0, height: 2 },
-    shadowOpacity: 0.1,
-    shadowRadius: 5,
-    elevation: 5,
-    alignItems: 'center',
-    width: '95%',
+    alignItems: 'center'
   },
   coverImage: {
     width: 60,
     height: 90,
     borderRadius: 5,
-    marginRight: 15,
+    marginRight: 15
   },
   bookDetails: {
     flex: 1,
-    justifyContent: 'center',
+    justifyContent: 'center'
   },
   bookTitle: {
     fontSize: 18,
     fontWeight: 'bold',
-    color: '#333',
+    color: '#333'
   },
   bookAuthor: {
     fontSize: 14,
-    color: '#666',
+    color: '#666'
   },
   removeButton: {
     backgroundColor: '#FF4C4C',
     padding: 8,
     borderRadius: 5,
-    marginLeft: 15,
+    marginLeft: 15
   },
   removeButtonText: {
     color: 'white',
     fontWeight: 'bold',
-    textTransform: 'uppercase',
+    textTransform: 'uppercase'
   },
   emptyMessage: {
     alignItems: 'center',
-    justifyContent: 'center',
+    justifyContent: 'center'
   },
   message: {
-    fontFamily: "regular",
     fontSize: 24,
     color: "#333",
     textAlign: 'center',
     backgroundColor: "#fff",
     borderRadius: 8,
-    padding: 15,
-    shadowColor: "#000",
-    shadowOffset: {
-      width: 0,
-      height: 2,
-    },
-    shadowOpacity: 0.2,
-    shadowRadius: 4,
-    elevation: 3,
-    marginVertical: 10,
+    padding: 15
   },
   subMessage: {
-    fontFamily: "regular",
     fontSize: 16,
     color: "#666",
     textAlign: 'center',
-    marginTop: 10,
+    marginTop: 10
   },
 });

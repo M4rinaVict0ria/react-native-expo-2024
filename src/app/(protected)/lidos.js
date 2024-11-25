@@ -2,13 +2,18 @@ import React, { useState, useEffect } from 'react';
 import { Text, View, StyleSheet, Image, FlatList, TouchableOpacity, Alert } from "react-native";
 import { Ionicons } from '@expo/vector-icons';
 import AsyncStorage from '@react-native-async-storage/async-storage';
+import { useIsFocused } from '@react-navigation/native'; // Importando o hook
 
 export default function Lidos() {
   const [readBooks, setReadBooks] = useState([]);
+  const isFocused = useIsFocused(); // Detecta o foco da tela
 
+  // Carrega os livros ao ganhar foco
   useEffect(() => {
-    loadReadBooks();
-  }, []);
+    if (isFocused) {
+      loadReadBooks();
+    }
+  }, [isFocused]);
 
   const loadReadBooks = async () => {
     try {
@@ -31,7 +36,7 @@ export default function Lidos() {
           text: "Remover", onPress: async () => {
             try {
               const updatedBooks = readBooks.filter(book => book.title !== bookToRemove.title);
-              setReadBooks(updatedBooks);
+              setReadBooks(updatedBooks); // Atualiza o estado local
               await AsyncStorage.setItem('lidos', JSON.stringify(updatedBooks)); // Atualiza o AsyncStorage
             } catch (error) {
               console.error("Erro ao remover o livro dos lidos", error);

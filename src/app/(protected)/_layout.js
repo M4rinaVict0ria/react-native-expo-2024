@@ -93,12 +93,6 @@ const DrawerLayout = () => {
                         drawerIcon: () => <Ionicons name="add-outline" size={20} color="black" />,
                     }} />
 
-                <Drawer.Screen name="config"
-                    options={{
-                        drawerLabel: "Configurações",
-                        headerTitle: "Configurações",
-                        drawerIcon: () => <Ionicons name="settings-outline" size={20} color="black" />,
-                    }} />
 
                 <Drawer.Screen name="payment"
                     options={{
