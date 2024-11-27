@@ -99,8 +99,18 @@ const DrawerLayout = () => {
                         drawerLabel: "Payment",
                         headerTitle: "Payment",
                         drawerIcon: () => <Ionicons name="wallet-outline" size={20} color="black" />,
-                    }} />   
+                    }} />
+
+                    <Drawer.Screen name="list"
+                    options={{
+                        drawerLabel: "Listagem",
+                        headerTitle: "Listagem",
+                        drawerIcon: () => <Ionicons name="list-outline" size={20} color="black" />,
+                    }} />
+            
             </Drawer>
+
+            
         </GestureHandlerRootView>
     );
 };
